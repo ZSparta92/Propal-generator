@@ -1,0 +1,16 @@
+[
+  {
+    "client": "CORPIOT",
+    "projet": "Mise en place JSM pour le support client",
+    "type": "Implementation",
+    "outils": ["Jira Service Management", "Confluence"],
+    "secteur": "Industrie / Manufacturing",
+    "duree": "3 mois",
+    "description": "Deploiement de Jira Service Management Cloud pour centraliser la gestion des demandes clients. Configuration du portail client, des SLA, des workflows d'escalade et des dashboards de suivi.",
+    "resultats": [
+      "Reduction de 40% du temps de traitement des demandes",
+      "Taux de satisfaction client passe de 65% a 89%",
+      "100% des demandes tracees et mesurables"
+    ]
+  }
+]
