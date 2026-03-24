@@ -37,8 +37,45 @@ function ProposalForm() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [error, setError] = useState('');
 
-  const next = () => setCurrentStep((s) => Math.min(s + 1, STEPS.length - 1));
-  const prev = () => setCurrentStep((s) => Math.max(s - 1, 0));
+  const isNextDisabled = () => {
+    if (currentStep === 0 && !formData.client.nom_entreprise.trim()) return true;
+    if (currentStep === 1 && !formData.projet.titre_projet.trim()) return true;
+    if (currentStep === 6 && formData.phases.length === 0) return true;
+    if (currentStep === 7 && formData.pricing.length === 0) return true;
+    if (currentStep === 9 && !formData.reference.trim()) return true;
+    return false;
+  };
+
+  const next = () => {
+    if (isNextDisabled()) return;
+    if (currentStep === 0 && !formData.client.nom_entreprise.trim()) {
+      setError("Le nom de l'entreprise est requis.");
+      return;
+    }
+    if (currentStep === 1 && !formData.projet.titre_projet.trim()) {
+      setError("Le titre du projet est requis.");
+      return;
+    }
+    if (currentStep === 6 && formData.phases.length === 0) {
+      setError("Vous devez ajouter au moins une phase au projet.");
+      return;
+    }
+    if (currentStep === 7 && formData.pricing.length === 0) {
+      setError("Vous devez ajouter au moins un élément de tarification.");
+      return;
+    }
+    if (currentStep === 9 && !formData.reference.trim()) {
+      setError("La référence de la proposition est requise.");
+      return;
+    }
+    
+    setError('');
+    setCurrentStep((s) => Math.min(s + 1, STEPS.length - 1));
+  };
+  const prev = () => {
+    setError('');
+    setCurrentStep((s) => Math.max(s - 1, 0));
+  };
 
   const handleGenerate = async () => {
     setIsGenerating(true);
@@ -57,8 +94,13 @@ function ProposalForm() {
         body: JSON.stringify(formData),
       });
       if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.error || 'Erreur generation');
+        const errorText = await res.text();
+        try {
+          const errData = JSON.parse(errorText);
+          throw new Error(errData.error || 'Erreur generation');
+        } catch (parseError) {
+          throw new Error(`Erreur serveur (${res.status}): ${errorText.substring(0, 100)}...`);
+        }
       }
       const data = await res.json();
       setGeneratedContent(data);
@@ -145,7 +187,7 @@ function ProposalForm() {
           &lt; Precedent
         </button>
         {currentStep < STEPS.length - 1 ? (
-          <button onClick={next} className="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">Suivant &gt;</button>
+          <button onClick={next} disabled={isNextDisabled()} className="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed">Suivant &gt;</button>
         ) : (
           <button onClick={handleGenerate} disabled={isGenerating} className="px-5 py-2.5 bg-blue-800 text-white rounded-lg hover:bg-blue-900 font-medium disabled:opacity-50 flex items-center gap-2">
             <span>✨</span> Generer la proposition

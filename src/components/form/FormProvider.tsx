@@ -14,6 +14,7 @@ type FormAction =
   | { type: 'SET_PRICING'; payload: PricingItem[] }
   | { type: 'UPDATE_CONTACT_BL'; payload: Partial<ContactBL> }
   | { type: 'UPDATE_FIELD'; payload: { field: string; value: string } }
+  | { type: 'SET_ALL_DATA'; payload: FormData }
   | { type: 'RESET' };
 
 const generateRef = () => {
@@ -23,6 +24,7 @@ const generateRef = () => {
 };
 
 const initialState: FormData = {
+  langue: 'FR',
   client: {
     nom_entreprise: '',
     secteur: '',
@@ -67,6 +69,7 @@ const initialState: FormData = {
   prerequis_specifiques: '',
   reference: generateRef(),
   date_creation: new Date().toLocaleDateString('fr-FR'),
+  date_validite_proposition: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toLocaleDateString('fr-FR')
 };
 
 function formReducer(state: FormData, action: FormAction): FormData {
@@ -91,6 +94,8 @@ function formReducer(state: FormData, action: FormAction): FormData {
       return { ...state, contact_bl: { ...state.contact_bl, ...action.payload } };
     case 'UPDATE_FIELD':
       return { ...state, [action.payload.field]: action.payload.value };
+    case 'SET_ALL_DATA':
+      return action.payload;
     case 'RESET':
       return { ...initialState, reference: generateRef(), date_creation: new Date().toLocaleDateString('fr-FR') };
     default:

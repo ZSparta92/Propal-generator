@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     );
     const referencesText = formatReferencesForPrompt(references);
 
-    const systemPrompt = buildSystemPrompt(referencesText);
+    const systemPrompt = buildSystemPrompt(referencesText, formData.langue);
     const userPrompt = buildUserPrompt(formData);
 
     const content = await generateProposalContent(systemPrompt, userPrompt);

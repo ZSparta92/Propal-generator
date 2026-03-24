@@ -93,6 +93,7 @@ export interface PricingItem {
 }
 
 export interface FormData {
+  langue: 'FR' | 'EN';
   client: ClientInfo;
   projet: ProjectInfo;
   contexte: ContexteBesoins;
@@ -106,4 +107,5 @@ export interface FormData {
   prerequis_specifiques: string;
   reference: string;
   date_creation: string;
+  date_validite_proposition: string;
 }

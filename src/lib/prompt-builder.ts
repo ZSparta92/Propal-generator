@@ -1,7 +1,9 @@
 import { FormData } from '@/types/proposal';
 import { formatReferencesForPrompt, findRelevantReferences } from './references';
 
-export function buildSystemPrompt(references: string): string {
+export function buildSystemPrompt(references: string, langue: 'FR' | 'EN' = 'FR'): string {
+  const isEn = langue === 'EN';
+  
   return `Tu es un consultant senior BleuLemon, expert Atlassian. Tu rediges des propositions commerciales professionnelles.
 
 IDENTITE BLUELEMON:
@@ -13,8 +15,13 @@ STYLE DE REDACTION:
 - Professionnel mais accessible, pas de jargon inutile
 - Phrases courtes et percutantes
 - Focus sur la valeur business pour le client
-- Utiliser "nous" pour BleuLemon
+- Utiliser "nous" ("we") pour BleuLemon
 - Ton confiant sans etre arrogant
+- INTERDICTION absolue d'utiliser du Markdown (**, -, ###).
+- INSTRUCTION : Réponds exclusivement en texte brut (Plain Text). Si tu veux souligner un point ou créer un titre, utilise uniquement des MAJUSCULES. Ton texte sera injecté dans un template Word qui ne supporte pas le rendu Markdown.
+- Ne génère jamais de blocs de texte denses de plus de 3 lignes sans sauter de ligne.
+
+LANGUE DE RÉDACTION OBLIGATOIRE : ${isEn ? 'ANGLAIS (English). Tu DOIS ABSOLUMENT rédiger toutes les valeurs du JSON en ANGLAIS.' : 'FRANÇAIS (French).'}
 
 REFERENCES PROJETS SIMILAIRES:
 ${references}
@@ -35,7 +42,8 @@ CHECKLIST QUALITE:
 - Chaque section fait minimum 2 paragraphes
 - Les benefices client sont mis en avant
 - Les chiffres et metriques sont utilises quand pertinent
-- Le contenu est specifique au contexte du client (pas generique)`;
+- Le contenu est specifique au contexte du client (pas generique)
+- LA LANGUE DOIT ÊTRE STRITEMENT LE ${isEn ? 'ANGLAIS' : 'FRANÇAIS'}`;
 }
 
 export function buildUserPrompt(formData: FormData): string {
@@ -46,6 +54,8 @@ export function buildUserPrompt(formData: FormData): string {
   const team = formData.equipe
     .map((m) => `- ${m.nom} (${m.role}, ${m.niveau})`)
     .join('\n');
+
+  const isEn = formData.langue === 'EN';
 
   return `BRIEF PROPOSITION COMMERCIALE:
 
@@ -82,5 +92,6 @@ ${phases}
 ${formData.livrables_specifiques ? `LIVRABLES SPECIFIQUES DEMANDES:\n${formData.livrables_specifiques}` : ''}
 ${formData.prerequis_specifiques ? `PREREQUIS SPECIFIQUES:\n${formData.prerequis_specifiques}` : ''}
 
-Genere le contenu JSON pour cette proposition. Sois specifique au contexte de ${formData.client.nom_entreprise}.`;
+Genere le contenu JSON pour cette proposition. Sois specifique au contexte de ${formData.client.nom_entreprise}.
+RAPPEL IMPORTANT: Le contenu généré à l'intérieur du JSON doit impérativement être écrit en ${isEn ? 'ANGLAIS' : 'FRANÇAIS'}.`;
 }
