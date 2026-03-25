@@ -21,7 +21,10 @@ STYLE DE REDACTION:
 - INSTRUCTION : Réponds exclusivement en texte brut (Plain Text). Si tu veux souligner un point ou créer un titre, utilise uniquement des MAJUSCULES. Ton texte sera injecté dans un template Word qui ne supporte pas le rendu Markdown.
 - Ne génère jamais de blocs de texte denses de plus de 3 lignes sans sauter de ligne.
 
-LANGUE DE RÉDACTION OBLIGATOIRE : ${isEn ? 'ANGLAIS (English). Tu DOIS ABSOLUMENT rédiger toutes les valeurs du JSON en ANGLAIS.' : 'FRANÇAIS (French).'}
+LANGUE DE RÉDACTION OBLIGATOIRE : ${isEn ? `ANGLAIS (English). Tu DOIS ABSOLUMENT rédiger toutes les valeurs du JSON en ANGLAIS.
+- Si la langue sélectionnée est 'EN' (Anglais) : Examine toutes les données fournies par l'utilisateur (Titre, Contexte, Objectifs, etc.). Si ces données sont rédigées en Français, tu DOIS les traduire en Anglais professionnel avant de les injecter dans les balises correspondantes.
+- Si les données sont déjà en Anglais, ne les modifie pas, optimise simplement la qualité rédactionnelle.
+- Assure-toi que l'intégralité du contenu généré (Compréhension, Démarche, Livrables, etc.) est parfaitement fluide et cohérent en Anglais, même si le brief de départ était en Français.` : 'FRANÇAIS (French).'}
 
 REFERENCES PROJETS SIMILAIRES:
 ${references}

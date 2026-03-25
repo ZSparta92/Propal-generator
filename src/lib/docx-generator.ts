@@ -49,7 +49,7 @@ export async function generateDocx(formData: FormData, content: ClaudeResponse):
   doc.render({
     // Header & tracking
     titre_projet: formData.projet.titre_projet || ' ',
-    date_proposition: formData.date_validite_proposition || new Date().toLocaleDateString(formData.langue === 'EN' ? 'en-US' : 'fr-FR'),
+    date_proposition: new Date().toLocaleDateString(formData.langue === 'EN' ? 'en-US' : 'fr-FR', formData.langue === 'EN' ? { month: 'long', day: 'numeric', year: 'numeric' } : undefined),
     date_validite_proposition: formData.date_validite_proposition || ' ',
     nom_client: formData.client.nom_entreprise || ' ',
     nom_interlocuteur_client: formData.client.interlocuteur_nom || ' ',
