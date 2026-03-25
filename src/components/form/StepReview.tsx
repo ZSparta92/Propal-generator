@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useFormContext } from './FormProvider';
 import { calculateTotals, formatCurrency } from '@/lib/calculations';
 import { buildSystemPrompt, buildUserPrompt } from '@/lib/prompt-builder';
@@ -19,6 +19,11 @@ export default function StepReview() {
   const totalBL = phases.reduce((s, p) => s + p.jours_bluelemon, 0);
   const totalClient = phases.reduce((s, p) => s + p.jours_client, 0);
 
+  const [currentDateString, setCurrentDateString] = useState('');
+  useEffect(() => {
+    setCurrentDateString(new Date().toLocaleDateString(formData.langue === 'EN' ? 'en-US' : 'fr-FR', formData.langue === 'EN' ? { month: 'long', day: 'numeric', year: 'numeric' } : undefined));
+  }, [formData.langue]);
+
   const promptText = `Je vais te fournir mon template Word officiel BleuLemon contenant des balises entre accolades {}. Ta mission est d'utiliser tes capacités Python pour ouvrir ce document et remplacer CHAQUE balise par la valeur correspondante ci-dessous :
 
 LISTE DES CORRESPONDANCES :
@@ -27,7 +32,7 @@ LISTE DES CORRESPONDANCES :
 {region} = [${client.localisation || 'Non spécifié'}]
 {nom_interlocuteur_client} = [${client.interlocuteur_nom || 'Non spécifié'}]
 {reference} = [${formData.reference || 'Non spécifié'}]
-{date_proposition} = [${new Date().toLocaleDateString(formData.langue === 'EN' ? 'en-US' : 'fr-FR')}]
+{date_proposition} = [${currentDateString}]
 {date_validite_proposition} = [${formData.date_validite_proposition || 'Non spécifié'}]
 {consultant_relecteur} = [${contact_bl.nom || 'Non spécifié'}]
 {total_jours_bl} = [${totalBL}]

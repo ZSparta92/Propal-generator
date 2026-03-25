@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import React, { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
 import { FormData, ProjectType, ConsultantLevel, Deployment, ClientInfo, ProjectInfo, ContexteBesoins, PerimetreFonctionnel, Contraintes, TeamMember, PhaseEstimation, PricingItem, ContactBL } from '@/types/proposal';
 
 type FormAction =
@@ -68,8 +68,8 @@ const initialState: FormData = {
   livrables_specifiques: '',
   prerequis_specifiques: '',
   reference: generateRef(),
-  date_creation: new Date().toLocaleDateString('fr-FR'),
-  date_validite_proposition: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toLocaleDateString('fr-FR')
+  date_creation: '',
+  date_validite_proposition: ''
 };
 
 function formReducer(state: FormData, action: FormAction): FormData {
@@ -112,6 +112,15 @@ const FormContext = createContext<FormContextType | undefined>(undefined);
 
 export function FormProvider({ children }: { children: ReactNode }) {
   const [formData, dispatch] = useReducer(formReducer, initialState);
+
+  useEffect(() => {
+    // Hydrate default dates client-side only to avoid SSR mismatch
+    if (!formData.date_creation) {
+      dispatch({ type: 'UPDATE_FIELD', payload: { field: 'date_creation', value: new Date().toLocaleDateString('fr-FR') } });
+      dispatch({ type: 'UPDATE_FIELD', payload: { field: 'date_validite_proposition', value: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toLocaleDateString('fr-FR') } });
+    }
+  }, []);
+
   return (
     <FormContext.Provider value={{ formData, dispatch }}>
       {children}

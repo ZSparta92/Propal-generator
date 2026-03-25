@@ -98,11 +98,10 @@ BleuLemon-Project/
 
 ### Installation
 
-```bash
-# Cloner le dépôt
-git clone https://github.com/ZSparta92/Propal-generator.git
-cd Propal-generator
+1. Extraire l'archive `.zip` fournie contenant le code source.
+2. Ouvrir un terminal dans le dossier extrait.
 
+```bash
 # Installer les dépendances
 npm install
 ```
@@ -114,8 +113,6 @@ Créer un fichier `.env.local` à la racine du projet :
 ```env
 ANTHROPIC_API_KEY=sk-ant-api03-xxxxxxxxxxxxxxxxxxxxx
 ```
-
-> ⚠️ Ne jamais committer ce fichier. Il est déjà présent dans le `.gitignore`.
 
 ### Démarrage
 
